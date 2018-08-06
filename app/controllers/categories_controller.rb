@@ -1,40 +1,53 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: [:show, :update, :destroy]
+  before_action :category, only: %i[show update destroy]
 
   def index
-    @categories = Category.all
-    json_response(@categories)
-  end
-
-  def create
-    @category = Category.create!(category_params)
-    json_response(@category, :created)
+    render json: Category.all.order(name: :asc)
   end
 
   def show
-    json_response(@category)
+    render json: @category
+  end
+
+  def create
+    @category = Category.create(category_params)
+    if @category.errors.full_messages.empty?
+      render json: @category
+    else
+      not_acceptable(@category)
+    end
   end
 
   def update
-    @category.update(category_params)
-    head :no_content
+    @category.update_attributes(category_params)
+    if @category.errors.full_messages.empty?
+      render json: @category
+    else
+      not_acceptable(@category)
+    end
   end
 
-  # DELETE /categorys/:id
   def destroy
     @category.destroy
-    head :no_content
+    if @candidate.destroy
+      render json: @candidate
+    else
+      not_acceptable(@candidate)
+    end
   end
 
   private
 
   def category_params
-    # whitelist params
-    params.permit(:name)
+    params.require(:category).permit(
+      :name
+    ).to_unsafe_h.to_snake_keys
   end
 
-  def set_category
+  def category
     @category = Category.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    record_not_found("Category #{params[:id]} not found")
   end
-
 end
+

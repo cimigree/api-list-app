@@ -1,44 +1,60 @@
 class ItemsController < ApplicationController
-  before_action :set_item
+  before_action :item, only: %i[show update destroy]
 
   def index
-    json_response(@category:set_category.items)
+    render json: Item.all.order(category: :asc)
   end
 
-  # GET /category:set_categorys/:category:set_category_id/items/:id
   def show
-    json_response(@item)
+    render json: @item
   end
 
-  # POST /category:set_categorys/:category:set_category_id/items
   def create
-    @category:set_category.items.create!(item_params)
-    json_response(@category:set_category, :created)
+    @item = Item.create(item_params)
+    if @item.errors.full_messages.empty?
+      render json: @item
+    else
+      not_acceptable(@item)
+    end
   end
 
-  # PUT /category:set_categorys/:category:set_category_id/items/:id
   def update
-    @item.update(item_params)
-    head :no_content
+    @item.update_attributes(item_params)
+    if @item.errors.full_messages.empty?
+      render json: @item
+    else
+      not_acceptable(@item)
+    end
   end
 
-  # DELETE /category:set_categorys/:category:set_category_id/items/:id
   def destroy
     @item.destroy
-    head :no_content
+    if @candidate.destroy
+      render json: @candidate
+    else
+      not_acceptable(@candidate)
+    end
   end
 
   private
 
   def item_params
-    params.permit(:name, :done)
+    params.require(:item).permit(
+      :name,
+      :brand_name,
+      :quantity,
+      :coupon,
+      :note,
+      :purchased,
+      :frequency,
+      :stores,
+      :categoryId
+    ).to_unsafe_h.to_snake_keys
   end
 
-  def set_category:set_category
-    @category:set_category = Todo.find(params[:category:set_category_id])
-  end
-
-  def set_category:set_category_item
-    @item = @category:set_category.items.find_by!(id: params[:id]) if @category:set_category
+  def item
+    @item = Item.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    record_not_found("Item #{params[:id]} not found")
   end
 end

@@ -18,6 +18,15 @@ ActiveRecord::Schema.define(version: 2018_04_22_185219) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "item_stores", force: :cascade do |t|
+    t.integer "item_id", null: false
+    t.integer "store_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_item_stores_on_item_id"
+    t.index ["store_id"], name: "index_item_stores_on_store_id"
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "brand_name"
@@ -30,12 +39,6 @@ ActiveRecord::Schema.define(version: 2018_04_22_185219) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_items_on_category_id"
-  end
-
-  create_table "items_stores", id: false, force: :cascade do |t|
-    t.integer "item_id", null: false
-    t.integer "store_id", null: false
-    t.index ["item_id", "store_id"], name: "index_items_stores_on_item_id_and_store_id"
   end
 
   create_table "stores", force: :cascade do |t|

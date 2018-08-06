@@ -1,40 +1,53 @@
 class StoresController < ApplicationController
-    before_action :set_store, only: [:show, :update, :destroy]
-  
-    def index
-      @stores = Store.all
-      json_response(@stores)
-    end
-  
-    def create
-      @store = Store.create!(store_params)
-      json_response(@store, :created)
-    end
-  
-    def show
-      json_response(@store)
-    end
-  
-    def update
-      @store.update(store_params)
-      head :no_content
-    end
-  
-    # DELETE /stores/:id
-    def destroy
-      @store.destroy
-      head :no_content
-    end
-  
-    private
-  
-    def store_params
-      # whitelist params
-      params.permit(:name)
-    end
-  
-    def set_store
-      @store = Store.find(params[:id])
-    end
-  
+  before_action :store, only: %i[show update destroy]
+
+  def index
+    render json: Store.all.order(name: :asc)
   end
+
+  def show
+    render json: @store
+  end
+
+  def create
+    @store = Store.create(store_params)
+    if @store.errors.full_messages.empty?
+      render json: @store
+    else
+      not_acceptable(@store)
+    end
+  end
+
+  def update
+    @store.update_attributes(store_params)
+    if @store.errors.full_messages.empty?
+      render json: @store
+    else
+      not_acceptable(@store)
+    end
+  end
+
+  def destroy
+    @store.destroy
+    if @candidate.destroy
+      render json: @candidate
+    else
+      not_acceptable(@candidate)
+    end
+  end
+
+  private
+
+  def store_params
+    params.require(:store).permit(
+      :name
+    ).to_unsafe_h.to_snake_keys
+  end
+
+  def store
+    @store = Store.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    record_not_found("Store #{params[:id]} not found")
+  end
+end
+
