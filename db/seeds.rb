@@ -4,4 +4,7 @@
 # Examples:
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+categories = Category.create([{name: 'Produce'}, {name: 'Deli'}, {name: 'Bread'}, {name: 'Baking'}, {name: 'Condiments'}, {name: 'Dairy'}, {name: 'Frozen'}, {name: 'Meat'}, {name: 'Fish'}, {name: 'Canned'}, {name: 'Foreign'}, {name: 'Cleaning'}, {name: 'Toiletries'}, {name: 'Paper'}, {name: 'Misc'}])
+
+stores = Store.create([{name: 'Giant Eagle'}, {name: 'Target'}, {name: 'Rite Aid'}, {name: 'Ace'} ])
+
