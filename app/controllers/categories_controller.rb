@@ -29,10 +29,10 @@ class CategoriesController < ApplicationController
 
   def destroy
     @category.destroy
-    if @candidate.destroy
-      render json: @candidate
+    if @category.destroy
+      render json: @category
     else
-      not_acceptable(@candidate)
+      not_acceptable(@category)
     end
   end
 

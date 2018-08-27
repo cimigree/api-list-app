@@ -8,11 +8,14 @@ class ItemSerializer < ActiveModel::Serializer
     :note,
     :purchased,
     :frequency,
-    :store
+    :category_name,
+    :stores_names
 
-    belongs_to :category
+    def category_name
+      object.category.name
+    end
 
-    def store
-      Store.find(object.store_id)
+    def stores_names
+      object.stores.map(&:name)
     end
 end

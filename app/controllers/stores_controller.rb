@@ -29,10 +29,10 @@ class StoresController < ApplicationController
 
   def destroy
     @store.destroy
-    if @candidate.destroy
-      render json: @candidate
+    if @store.destroy
+      render json: @store
     else
-      not_acceptable(@candidate)
+      not_acceptable(@store)
     end
   end
 

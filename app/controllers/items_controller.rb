@@ -2,7 +2,7 @@ class ItemsController < ApplicationController
   before_action :item, only: %i[show update destroy]
 
   def index
-    render json: Item.all.order(category: :asc)
+    render json: Item.all.joins(:category).order(name: :asc)
   end
 
   def show
@@ -10,7 +10,9 @@ class ItemsController < ApplicationController
   end
 
   def create
-    @item = Item.create(item_params)
+    store_ids = params[:item][:storeIds]
+    @item = Item.create(item_params.except("store_ids"))
+    @item.store_ids = store_ids
     if @item.errors.full_messages.empty?
       render json: @item
     else
@@ -29,10 +31,10 @@ class ItemsController < ApplicationController
 
   def destroy
     @item.destroy
-    if @candidate.destroy
-      render json: @candidate
+    if @item.destroy
+      render json: @item
     else
-      not_acceptable(@candidate)
+      not_acceptable(@item)
     end
   end
 
@@ -41,14 +43,14 @@ class ItemsController < ApplicationController
   def item_params
     params.require(:item).permit(
       :name,
-      :brand_name,
+      :brandName,
       :quantity,
       :coupon,
       :note,
       :purchased,
       :frequency,
-      :stores,
-      :categoryId
+      :categoryId,
+      storeIds: [],
     ).to_unsafe_h.to_snake_keys
   end
 
@@ -58,3 +60,6 @@ class ItemsController < ApplicationController
     record_not_found("Item #{params[:id]} not found")
   end
 end
+
+
+# send json as such: {"item":{"name": "Carolines Yogurt","brandName": "Chobani","quantity": "3","coupon": true,"note": "hint of strawberry","purchased": false,"frequency": "weekly","categoryId": 6,"storeIds": [1]}}

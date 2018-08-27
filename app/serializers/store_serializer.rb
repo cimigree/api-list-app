@@ -1,7 +1,7 @@
 class StoreSerializer < ActiveModel::Serializer
 
   attributes :id,
-    :name
+    :name,
+    :items
 
-  has_many :items, serializer: ItemSerializer
 end
