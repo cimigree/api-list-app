@@ -4,4 +4,5 @@ class StoreSerializer < ActiveModel::Serializer
     :name,
     :items
 
+    has_many :items
 end
