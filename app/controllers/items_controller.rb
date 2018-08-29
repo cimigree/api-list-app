@@ -2,6 +2,11 @@ class ItemsController < ApplicationController
   before_action :item, only: %i[show update destroy]
 
   def index
+    Frequency::ResetPurchased.process
+    render json: Item.where(purchased: !true).joins(:category).order(name: :asc)
+  end
+
+  def items_all
     render json: Item.all.joins(:category).order(name: :asc)
   end
 
@@ -21,7 +26,14 @@ class ItemsController < ApplicationController
   end
 
   def update
+    unless @item.purchased
+      if params[:item][:purchased]
+        date_purchased = Date.today()
+        item_params[:date_purchased] = date_purchased
+      end
+    end
     @item.update_attributes(item_params)
+    Frequency::CalcNextPurchaseDate.process(@item.id)
     if @item.errors.full_messages.empty?
       render json: @item
     else

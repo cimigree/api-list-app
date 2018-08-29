@@ -28,13 +28,15 @@ ActiveRecord::Schema.define(version: 2018_04_22_185219) do
   end
 
   create_table "items", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "brand_name"
     t.string "quantity"
-    t.boolean "coupon"
+    t.boolean "coupon", default: false
     t.text "note"
-    t.boolean "purchased"
-    t.boolean "frequency"
+    t.boolean "purchased", default: false, null: false
+    t.boolean "frequency", null: false
+    t.date "date_purchased"
+    t.date "next_purchase_date"
     t.integer "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

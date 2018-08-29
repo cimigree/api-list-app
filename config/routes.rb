@@ -5,5 +5,9 @@ Rails.application.routes.draw do
   resources :stores do
     resources :items
   end
-  resources :items
+  resources :items do
+    collection do
+      get :items_all
+    end
+  end
 end
