@@ -1,12 +1,21 @@
 class StoresController < ApplicationController
-  before_action :store, only: %i[show update destroy]
+  before_action :store, only: %i[show all_items update destroy]
 
   def index
     render json: Store.all.order(name: :asc)
   end
 
   def show
-    render json: @store
+    store_with_items = @store.items.select{|i| i.purchased == false }
+    if store_with_items.length == 0
+      render json: @store.items
+    else
+      render json: store_with_items
+    end
+  end
+
+  def all_items
+    render json: @store.items
   end
 
   def create

@@ -3,7 +3,9 @@ Rails.application.routes.draw do
     resources :items
   end
   resources :stores do
-    resources :items
+    member do
+      get :all_items
+    end
   end
   resources :items do
     collection do

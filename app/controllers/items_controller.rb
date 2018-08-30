@@ -7,7 +7,7 @@ class ItemsController < ApplicationController
   end
 
   def items_all
-    render json: Item.all.joins(:category).order(name: :asc)
+    render json: Item.all.includes(:category).order(name: :asc)
   end
 
   def show
