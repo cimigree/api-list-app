@@ -1,7 +1,7 @@
 module Frequency
   class ResetPurchased
 
-    def process
+    def self.process
       obj = new
       obj.run
     end
@@ -13,7 +13,7 @@ module Frequency
 
     def run
       # iterate through the items. if the item.nextpurchasedate is the same as today, then set item.purchased to false and reset next purchase date to nil
-      @items.each do i
+      @items.each do |i|
         if i.next_purchase_date == @today
           i.update({purchased: false, next_purchase_date: nil})
         end

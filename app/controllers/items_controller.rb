@@ -2,8 +2,8 @@ class ItemsController < ApplicationController
   before_action :item, only: %i[show update destroy]
 
   def index
-    Frequency::ResetPurchased.process
-    render json: Item.where(purchased: !true).joins(:category).order(name: :asc)
+    Frequency::ResetPurchased.process()
+    render json: Item.where(purchased: false).includes(:category).order(name: :asc)
   end
 
   def items_all
