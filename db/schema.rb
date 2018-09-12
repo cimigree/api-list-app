@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2018_04_22_185219) do
     t.boolean "coupon", default: false
     t.text "note"
     t.boolean "purchased", default: false, null: false
-    t.boolean "frequency", null: false
+    t.string "frequency", null: false
     t.date "date_purchased"
     t.date "next_purchase_date"
     t.integer "category_id"

@@ -10,7 +10,7 @@ module Frequency
       obj.run
     end
 
-    def initialize
+    def initialize(options)
       @item = Item.find(options)
       @days = 0
     end
@@ -23,14 +23,16 @@ module Frequency
     def find_frequency
       frequency = @item.frequency
       case frequency
-      when '1 week' then @days=6
-      when 'semi-monthly' then @days=14
+      when 'weekly' then @days=6
+      when 'biweekly' then @days=13
       when 'monthly' then @days=29
       when 'as needed' then @days=180
       end
     end
 
     def add_time!
+      puts "days is #{@days}"
+      puts "date item was purchased is #{@item.date_purchased}"
       next_purchase_date = @item.date_purchased + @days
       @item.update(next_purchase_date: next_purchase_date)
     end

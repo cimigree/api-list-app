@@ -9,9 +9,6 @@ class ItemSerializer < ActiveModel::Serializer
     :purchased,
     :frequency,
     :category,
-    :stores_names
+    :stores
 
-    def stores_names
-      object.stores.map(&:name)
-    end
 end

@@ -27,13 +27,12 @@ class ItemsController < ApplicationController
 
   def update
     unless @item.purchased
-      if params[:item][:purchased]
-        date_purchased = Date.today()
-        item_params[:date_purchased] = date_purchased
+      if params[:item][:purchased] == true
+        @date_purchased = Date.today()
       end
     end
     @item.update_attributes(item_params)
-    Frequency::CalcNextPurchaseDate.process(@item.id)
+    Frequency::CalcNextPurchaseDate.process(@item.id) if @item.purchased == true
     if @item.errors.full_messages.empty?
       render json: @item
     else
@@ -62,8 +61,9 @@ class ItemsController < ApplicationController
       :purchased,
       :frequency,
       :categoryId,
-      storeIds: [],
-    ).to_unsafe_h.to_snake_keys
+      :date_purchased,
+      storesAttributes: [:id, :name]
+    ).to_unsafe_h.to_snake_keys.merge(date_purchased: @date_purchased)
   end
 
   def item
